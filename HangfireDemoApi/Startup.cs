@@ -48,7 +48,8 @@ namespace HangfireDemoApi
                     UseRecommendedIsolationLevel = true,
                     UsePageLocksOnDequeue = true,
                     DisableGlobalLocks = true
-                }));
+                })
+                .UseNLogLogProvider());
 
             services.AddHangfireServer();
 

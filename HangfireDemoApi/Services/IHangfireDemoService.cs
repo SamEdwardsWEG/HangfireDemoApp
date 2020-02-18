@@ -1,19 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Hangfire;
+using HangfireDemoApi.Controllers;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using NLog.Extensions.Logging;
 
 namespace HangfireDemoApi.Services
 {
-    public static class HangfireDemoService
+    public class HangfireDemoService
     {
-        public static void FireAndForget()
+        private static readonly ILogger<HangfireDemoService> _logger;
+        private static readonly WeatherForecastController WeatherForecastController;
+
+        static HangfireDemoService()
         {
+            _logger = new Logger<HangfireDemoService>(new NLogLoggerFactory());
+            WeatherForecastController = new WeatherForecastController(new NullLogger<WeatherForecastController>());
+        }
+
+        public static object FireAndForget()
+        {
+            _logger.LogInformation("starting fire and forget job");
+            
             for (var i = 0; i < 1000; i++)
             {
                 Console.WriteLine("Fire and Forget " + i);
             }
+
+            _logger.LogInformation("finishing fire and forget job");
+
+            var result = WeatherForecastController.Get();
+
+            return result;
         }
 
         public static void Delayed(int time)
